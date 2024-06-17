@@ -13,8 +13,8 @@ This project implements a CI/CD pipeline using Terraform and AWS. It automates i
 - **Amazon ECR** 🐋: Storing and managing Docker images.
 
 ## Project Structure 📂
-
-terraform-aws-cicd/
+```bash
+infra-deploy-aws/
 ├── .github/
 │ └── workflows/
 │ └── ci-cd.yml
@@ -27,7 +27,7 @@ terraform-aws-cicd/
 │ └── app/
 │ └── ...
 └── README.md
-
+```
 
 ## Features ✨
 
