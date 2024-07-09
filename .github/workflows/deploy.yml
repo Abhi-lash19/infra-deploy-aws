@@ -69,24 +69,20 @@ jobs:
       - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry: public.ecr.aws/r8g8e2y1
 
       - name: Build, push docker image
         env:
-          REGISTRY: public.ecr.aws/r8g8e2y1
-          REPOSITORY: example-node-app  
+          REPOSITORY: public.ecr.aws/r8g8e2y1/example-node-app  # <-- Update with your ECR repository URI
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker build -t $REPOSITORY:$IMAGE_TAG .
+          docker push $REPOSITORY:$IMAGE_TAG
         working-directory: ./nodeapp
 
       - name: Deploy docker image to EC2
         env:
           SERVER_PUBLIC_IP: ${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP }}
-          REGISTRY: public.ecr.aws/r8g8e2y1
-          REPOSITORY: example-node-app  
+          REPOSITORY: public.ecr.aws/r8g8e2y1/example-node-app
           IMAGE_TAG: ${{ github.sha }}
         uses: appleboy/ssh-action@master
         with:
@@ -97,7 +93,7 @@ jobs:
             sudo apt update
             sudo apt install -y docker.io
             sudo apt install -y awscli
-            docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            docker pull $REPOSITORY:$IMAGE_TAG
             docker stop myappcontainer || true
             docker rm myappcontainer || true
-            docker run -d --name myappcontainer -p 80:8080 $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            docker run -d --name myappcontainer -p 80:8080 $REPOSITORY:$IMAGE_TAG
