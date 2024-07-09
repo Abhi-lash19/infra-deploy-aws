@@ -70,15 +70,12 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          registry: public.ecr.aws/r8g8e2y1
 
       - name: Build, push docker image
         env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: example-node-app
+          REGISTRY: public.ecr.aws/r8g8e2y1
+          REPOSITORY: example-node-app  
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
@@ -88,8 +85,8 @@ jobs:
       - name: Deploy docker image to EC2
         env:
           SERVER_PUBLIC_IP: ${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP }}
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: example-node-app
+          REGISTRY: public.ecr.aws/r8g8e2y1
+          REPOSITORY: example-node-app  
           IMAGE_TAG: ${{ github.sha }}
         uses: appleboy/ssh-action@master
         with:
