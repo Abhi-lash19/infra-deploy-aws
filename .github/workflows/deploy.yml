@@ -83,9 +83,6 @@ jobs:
       - name: Deploy docker image to EC2
         env:
           SERVER_PUBLIC_IP: ${{ needs.deploy-infra.outputs.SERVER_PUBLIC_IP }}
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: example-node-app
-          IMAGE_TAG: ${{ github.sha }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ env.SERVER_PUBLIC_IP }}
@@ -95,7 +92,8 @@ jobs:
             sudo apt update
             sudo apt install -y docker.io
             sudo apt install -y awscli
-            docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
-            docker stop myappcontainer || true
-            docker rm myappcontainer || true
-            docker run -d --name myappcontainer -p 80:8080 $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            $(aws ecr get-login --no-include-email --region ${AWS_REGION})
+            sudo docker stop myappcontainer || true
+            sudo docker rm myappcontainer || true
+            sudo docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
+            sudo docker run -d --name myappcontainer -p 80:8080 $REGISTRY/$REPOSITORY:$IMAGE_TAG
