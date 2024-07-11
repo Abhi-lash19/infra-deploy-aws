@@ -3,6 +3,10 @@ variable "region" {
   type        = string
 }
 
+variable "subnet_id" {
+  description = "Subnet ID for the EC2 instance"
+}
+
 variable "key_name" {
   description = "The name of the key pair"
   type        = string

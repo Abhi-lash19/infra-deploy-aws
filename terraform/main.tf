@@ -13,12 +13,15 @@ terraform {
 provider "aws" {
   region = var.region
 }
+
 resource "aws_instance" "servernode" {
   ami                    = "ami-0ad21ae1d0696ad58"
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [aws_security_group.maingroup.id]
   iam_instance_profile   = aws_iam_instance_profile.ec2-profile.name
+  subnet_id              = var.subnet_id  # Ensure this is a public subnet
+
   connection {
     type        = "ssh"
     host        = self.public_ip
@@ -26,14 +29,17 @@ resource "aws_instance" "servernode" {
     private_key = var.private_key
     timeout     = "4m"
   }
+
   tags = {
     "name" = "DeployVM"
   }
 }
+
 resource "aws_iam_instance_profile" "ec2-profile" {
   name = "ec2-profile"
   role = "ECR-LOGIN-AUTO"
 }
+
 resource "aws_security_group" "maingroup" {
   egress = [
     {
@@ -48,9 +54,10 @@ resource "aws_security_group" "maingroup" {
       to_port          = 0
     }
   ]
+
   ingress = [
     {
-      cidr_blocks      = ["0.0.0.0/0", ]
+      cidr_blocks      = ["0.0.0.0/0"]
       description      = ""
       from_port        = 22
       ipv6_cidr_blocks = []
@@ -61,7 +68,7 @@ resource "aws_security_group" "maingroup" {
       to_port          = 22
     },
     {
-      cidr_blocks      = ["0.0.0.0/0", ]
+      cidr_blocks      = ["0.0.0.0/0"]
       description      = ""
       from_port        = 80
       ipv6_cidr_blocks = []
@@ -70,10 +77,19 @@ resource "aws_security_group" "maingroup" {
       security_groups  = []
       self             = false
       to_port          = 80
+    },
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      description      = "Allow ICMP for ping"
+      from_port        = -1
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "icmp"
+      security_groups  = []
+      self             = false
+      to_port          = -1
     }
   ]
-
-
 }
 
 resource "aws_key_pair" "deployer" {
