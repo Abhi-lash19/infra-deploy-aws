@@ -104,9 +104,14 @@ jobs:
             sudo apt-get install -y docker.io
             sudo apt-get install -y unzip
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
+            unzip -o awscliv2.zip
+
             sudo ./aws/install --update
-            sudo usermod -aG docker ubuntu
-            newgrp docker
-            docker pull $REPOSITORY:$IMAGE_TAG
+
+            echo "Repository: $REPOSITORY"
+            echo "Image Tag: $IMAGE_TAG"
+            echo "Full Image: $REPOSITORY:$IMAGE_TAG"
+
+            sudo systemctl start docker
+            sudo docker pull $REPOSITORY:$IMAGE_TAG
             docker run -d --name myappcontainer -p 80:8080 $REPOSITORY:$IMAGE_TAG
