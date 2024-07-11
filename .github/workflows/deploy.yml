@@ -29,7 +29,8 @@ jobs:
 
       - name: Terraform Destroy
         id: destroy
-        run: terraform destroy -auto-approve \
+        run: |
+          terraform init
              -var="region=${AWS_REGION}" \
              -var="public_key=${{ secrets.AWS_SSH_KEY_PUBLIC }}" \
              -var="private_key=${{ secrets.AWS_SSH_KEY_PRIVATE }}" \
