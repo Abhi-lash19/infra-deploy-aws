@@ -109,6 +109,4 @@ jobs:
             sudo usermod -aG docker ubuntu
             newgrp docker
             docker pull $REPOSITORY:$IMAGE_TAG
-            docker stop myappcontainer || true
-            docker rm myappcontainer || true
             docker run -d --name myappcontainer -p 80:8080 $REPOSITORY:$IMAGE_TAG
