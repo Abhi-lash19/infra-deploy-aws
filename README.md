@@ -49,7 +49,7 @@ infra-deploy-aws/
 
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/your-username/terraform-aws-cicd.git
+    git clone https://github.com/Abhi-lash19/infra-deploy-aws.git
     cd terraform-aws-cicd
     ```
 
@@ -60,18 +60,6 @@ infra-deploy-aws/
     terraform apply
     ```
 
-3. **Build Docker Image**:
-    ```sh
-    cd docker
-    docker build -t your-app-name .
-    ```
-
-4. **Push Docker Image to ECR**:
-    ```sh
-    aws ecr get-login-password --region your-region | docker login --username AWS --password-stdin your-account-id.dkr.ecr.your-region.amazonaws.com
-    docker tag your-app-name:latest your-account-id.dkr.ecr.your-region.amazonaws.com/your-repo-name:latest
-    docker push your-account-id.dkr.ecr.your-region.amazonaws.com/your-repo-name:latest
-    ```
 
 ## Usage 🚀
 
