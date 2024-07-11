@@ -34,5 +34,5 @@ jobs:
              -var="public_key=${{ secrets.AWS_SSH_KEY_PUBLIC }}" \
              -var="private_key=${{ secrets.AWS_SSH_KEY_PRIVATE }}" \
              -var="key_name=deployer-key" \
-             -var="subnet_id=${{ secrets.AWS_SUBNET_ID }}"
-        working-directory: ./terraform
+             -var="subnet_id=${{ secrets.AWS_SUBNET_ID }}" \
+             ./terraform
