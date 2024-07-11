@@ -112,6 +112,9 @@ jobs:
             echo "Image Tag: $IMAGE_TAG"
             echo "Full Image: $REPOSITORY:$IMAGE_TAG"
 
+            if [ -z "$REPOSITORY" ]; then echo "REPOSITORY is empty"; exit 1; fi
+            if [ -z "$IMAGE_TAG" ]; then echo "IMAGE_TAG is empty"; exit 1; fi
+
             sudo systemctl start docker
             sudo docker pull $REPOSITORY:$IMAGE_TAG
             docker run -d --name myappcontainer -p 80:8080 $REPOSITORY:$IMAGE_TAG
