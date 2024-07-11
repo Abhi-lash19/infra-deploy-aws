@@ -42,6 +42,7 @@ jobs:
             -var="public_key=${{ secrets.AWS_SSH_KEY_PUBLIC }}" \
             -var="private_key=${{ secrets.AWS_SSH_KEY_PRIVATE }}" \
             -var="key_name=deployer-key" \
+            -var="subnet_id=${{ secrets.AWS_SUBNET_ID }}" \
             -out=PLAN
         working-directory: ./terraform
 
@@ -53,7 +54,7 @@ jobs:
       - name: Set output
         id: set-ip
         run: |-
-          echo "::set-output name=instance_public_ip::$(terraform output instance_public_ip)"
+          echo "::set-output name=instance_public_ip::$(terraform output -raw instance_public_ip)"
         working-directory: ./terraform
 
   deploy-app:
